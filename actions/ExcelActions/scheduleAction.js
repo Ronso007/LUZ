@@ -1,6 +1,15 @@
 // Imports
 var Excel = require("exceljs");
 var path = require("path");
+const { google } = require("googleapis");
+var fs = require("fs");
+
+var cron = require("node-cron");
+
+cron.schedule("* * * * *", async () => {
+  await downloadLuz();
+  console.log("Update Luz");
+});
 
 // Require route modules.
 var excelJSBridge = require("./ExcelJS-Bridge");
@@ -10,12 +19,33 @@ var workbook = new Excel.Workbook();
 async function setWorkBook(excelName) {
   await workbook.xlsx.readFile(excelName);
 }
+async function downloadLuz() {
+  const drive = google.drive({ version: "v3", auth: global.oauth2Client });
+  const fileId = "1x6PjiaUTt8u5E3NoN6b8ogYcVpwyEnAS";
+  const dest = fs.createWriteStream("LUZ2.xlsx");
+  try {
+    const file = await drive.files.get(
+      {
+        fileId: fileId,
+        alt: "media",
+      },
+      { responseType: "arraybuffer" }
+    );
+    // file.data.on("end", () => console.log("onCompleted"));
+    //file.data.pipe(dest);
+    fs.writeFileSync("LUZ2.xlsx", Buffer.from(file.data));
+    //return file.status;
+  } catch (err) {
+    // TODO(developer) - Handle error
+    throw err;
+  }
+  console.log("Success text file");
+}
 
 exports.readBase = function () {};
 
 exports.readWeek = async function (weekNum, Cycle) {
-  //await downloadLuz(Cycle);
-  let xlpath = path.join(__dirname, "/../../test.xlsx");
+  let xlpath = path.join(__dirname, "/../../LUZ2.xlsx");
 
   await setWorkBook(xlpath);
 
@@ -93,7 +123,7 @@ exports.readWeek = async function (weekNum, Cycle) {
 };
 
 exports.getNumOfWeeks = async function (Cycle) {
-  let xlpath = path.join(__dirname, "/../../test.xlsx");
+  let xlpath = path.join(__dirname, "/../../LUZ2.xlsx");
 
   await setWorkBook(xlpath);
 
