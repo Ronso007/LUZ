@@ -11,14 +11,6 @@ var fs = require("fs");
 //   console.log("Update Luz");
 // });
 
-setInterval(function () {
-  var date = new Date();
-  if (date.getSeconds() === 0) {
-    console.log("Downloading Luz...");
-    downloadLuz();
-  }
-}, 1000);
-
 // Require route modules.
 var excelJSBridge = require("./ExcelJS-Bridge");
 
@@ -27,28 +19,28 @@ var workbook = new Excel.Workbook();
 async function setWorkBook(excelName) {
   await workbook.xlsx.readFile(excelName);
 }
-async function downloadLuz() {
-  const drive = google.drive({ version: "v3", auth: global.oauth2Client });
-  const fileId = "1x6PjiaUTt8u5E3NoN6b8ogYcVpwyEnAS";
-  const dest = fs.createWriteStream("LUZ2.xlsx");
-  try {
-    const file = await drive.files.get(
-      {
-        fileId: fileId,
-        alt: "media",
-      },
-      { responseType: "arraybuffer" }
-    );
-    // file.data.on("end", () => console.log("onCompleted"));
-    //file.data.pipe(dest);
-    fs.writeFileSync("LUZ2.xlsx", Buffer.from(file.data));
-    //return file.status;
-  } catch (err) {
-    // TODO(developer) - Handle error
-    throw err;
-  }
-  console.log("Success text file");
-}
+// async function downloadLuz() {
+//   const drive = google.drive({ version: "v3", auth: global.oauth2Client });
+//   const fileId = "1x6PjiaUTt8u5E3NoN6b8ogYcVpwyEnAS";
+//   const dest = fs.createWriteStream("LUZ2.xlsx");
+//   try {
+//     const file = await drive.files.get(
+//       {
+//         fileId: fileId,
+//         alt: "media",
+//       },
+//       { responseType: "arraybuffer" }
+//     );
+//     // file.data.on("end", () => console.log("onCompleted"));
+//     //file.data.pipe(dest);
+//     fs.writeFileSync("LUZ2.xlsx", Buffer.from(file.data));
+//     //return file.status;
+//   } catch (err) {
+//     // TODO(developer) - Handle error
+//     throw err;
+//   }
+//   console.log("Success text file");
+// }
 
 exports.readBase = function () {};
 
