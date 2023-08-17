@@ -4,12 +4,20 @@ var path = require("path");
 const { google } = require("googleapis");
 var fs = require("fs");
 
-var cron = require("node-cron");
+// var cron = require("node-cron");
 
-cron.schedule("* * * * *", async () => {
-  await downloadLuz();
-  console.log("Update Luz");
-});
+// cron.schedule("* * * * *", async () => {
+//   await downloadLuz();
+//   console.log("Update Luz");
+// });
+
+setInterval(function () {
+  var date = new Date();
+  if (date.getSeconds() === 0) {
+    console.log("Downloading Luz...");
+    downloadLuz();
+  }
+}, 1000);
 
 // Require route modules.
 var excelJSBridge = require("./ExcelJS-Bridge");
